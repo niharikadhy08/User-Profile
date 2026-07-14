@@ -1,0 +1,198 @@
+@let profileData = profile();
+
+<main class="profile-page">
+  <header class="top-nav">
+    <section class="top-nav__inner" aria-label="e-Booking header">
+      <div class="brand">
+        <span class="brand__icon" aria-hidden="true">
+          <mat-icon>train</mat-icon>
+        </span>
+        <span class="brand__copy">
+          <strong>{{ profileData.portalName }}</strong>
+          <small>{{ profileData.portalType }}</small>
+        </span>
+      </div>
+
+      <nav class="nav-actions" aria-label="Primary actions">
+        @for (action of navActions(); track action.label) {
+          <button class="nav-action" type="button">
+            <mat-icon aria-hidden="true">{{ action.icon }}</mat-icon>
+            <span>{{ action.label }}</span>
+          </button>
+        }
+      </nav>
+
+      <div class="account-area">
+        <span class="clock">
+          <mat-icon aria-hidden="true">schedule</mat-icon>
+          <span>{{ formattedTimestamp() }}</span>
+        </span>
+        <span class="avatar" aria-hidden="true">AA</span>
+        <span class="account-area__copy">
+          <strong>{{ profileData.userId }}</strong>
+          <small>{{ profileData.role }}</small>
+        </span>
+        <mat-icon class="account-area__chevron" aria-hidden="true">expand_more</mat-icon>
+      </div>
+    </section>
+  </header>
+
+  <section class="terminal-bar" aria-label="Session and selected terminal">
+    <div class="terminal-bar__inner">
+      <div class="terminal-bar__login">
+        <span>Logged in as:</span>
+        <strong>{{ profileData.userId }}</strong>
+      </div>
+
+      <div class="terminal-bar__terminal">
+        <span>Terminal:</span>
+        <strong>{{ profileData.terminal }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-shell">
+    <article class="hero-card" aria-label="Customer profile summary">
+      <div class="hero-card__identity">
+        <span class="hero-card__icon" aria-hidden="true">
+          <mat-icon>business</mat-icon>
+        </span>
+
+        <div class="hero-card__copy">
+          <div class="hero-card__title-line">
+            <h1>{{ profileData.companyName }}</h1>
+            <span class="active-badge">
+              <span aria-hidden="true"></span>
+              {{ profileData.status }}
+            </span>
+          </div>
+
+          <p>
+            <span>CustCode: <strong>{{ profileData.customerCode }}</strong></span>
+            <span aria-hidden="true">.</span>
+            <span>LoginType: <strong>{{ profileData.loginType }}</strong></span>
+            <span aria-hidden="true">.</span>
+            <span>SuperUser: <strong>{{ profileData.superUser }}</strong></span>
+          </p>
+        </div>
+      </div>
+
+      <div class="hero-card__stamp">
+        <span>E-CUSTOMER PROFILE</span>
+        <strong>{{ profileData.userId }}</strong>
+      </div>
+    </article>
+
+    <section class="profile-grid" aria-label="Profile details">
+      <article class="panel profile-overview">
+        <header class="panel__header">
+          <div class="panel__title">
+            <span class="panel__icon" aria-hidden="true">
+              <mat-icon>person</mat-icon>
+            </span>
+            <h2>Profile Overview</h2>
+          </div>
+          <span class="read-only">READ-ONLY</span>
+        </header>
+
+        <div class="overview-list">
+          @for (row of overviewRows(); track row.label) {
+            <div class="overview-row">
+              <span class="overview-row__icon" aria-hidden="true">
+                <mat-icon>{{ row.icon }}</mat-icon>
+              </span>
+              <span class="overview-row__copy">
+                <span>{{ row.label }}</span>
+                <strong>{{ row.value }}</strong>
+              </span>
+            </div>
+          }
+        </div>
+      </article>
+
+      <section class="right-column">
+        <article class="panel contact-panel">
+          <header class="panel__header">
+            <div class="panel__title">
+              <span class="panel__icon" aria-hidden="true">
+                <mat-icon>phone</mat-icon>
+              </span>
+              <h2>Contact Information</h2>
+            </div>
+          </header>
+
+          <form class="contact-form" [formGroup]="contactForm">
+            <label class="field">
+              <span>Mobile Number</span>
+              <input type="tel" inputmode="numeric" autocomplete="tel" formControlName="mobile" />
+            </label>
+
+            <label class="field field--with-icon">
+              <span>Email Address</span>
+              <span class="input-shell">
+                <input type="email" autocomplete="email" formControlName="email" />
+                <mat-icon aria-hidden="true">mail</mat-icon>
+              </span>
+            </label>
+          </form>
+
+          <footer class="panel__actions">
+            <button class="ghost-button" type="button" (click)="resetContact()">Reset</button>
+            <button mat-flat-button class="primary-button" type="button">
+              <mat-icon aria-hidden="true">save</mat-icon>
+              <span>Save Changes</span>
+            </button>
+          </footer>
+        </article>
+
+        <article class="panel logins-panel">
+          <header class="panel__header">
+            <div class="panel__title">
+              <span class="panel__icon" aria-hidden="true">
+                <mat-icon>history</mat-icon>
+              </span>
+              <h2>Last 3 Logins</h2>
+            </div>
+          </header>
+
+          <div class="login-table-wrap">
+            <table class="login-table">
+              <thead>
+                <tr>
+                  <th scope="col">Login Time</th>
+                  <th scope="col">Device</th>
+                  <th scope="col">IP Address</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (login of lastLogins(); track login.loginTime) {
+                  <tr>
+                    <td data-label="Login Time">{{ login.loginTime }}</td>
+                    <td data-label="Device">{{ login.device }}</td>
+                    <td data-label="IP Address">{{ login.ipAddress }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <footer class="panel__actions">
+            <button mat-flat-button class="primary-button" type="button">
+              <mat-icon aria-hidden="true">lock</mat-icon>
+              <span>Change Password</span>
+            </button>
+          </footer>
+        </article>
+      </section>
+    </section>
+  </section>
+
+  <footer class="page-footer">
+    <span>e-Booking (Domestic) . Indian Railways Freight Portal</span>
+    <span>Session: <strong>{{ profileData.userId }}</strong> . WIN</span>
+  </footer>
+
+  <button class="help-button" type="button" aria-label="Help">
+    <mat-icon aria-hidden="true">question_mark</mat-icon>
+  </button>
+</main>
